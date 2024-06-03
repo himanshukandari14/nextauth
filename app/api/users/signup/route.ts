@@ -6,6 +6,7 @@ import { sendEmail } from "@/helpers/mailer";
 
 connect();
 
+// signup route and controller
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
@@ -27,12 +28,14 @@ export async function POST(request: NextRequest) {
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
 
+    // create user
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
     });
 
+    // save user in db
     const savedUser = await newUser.save();
     console.log(savedUser);
 
@@ -46,6 +49,7 @@ export async function POST(request: NextRequest) {
       savedUser,
     });
   } catch (error: any) {
+    console.log(error)
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
